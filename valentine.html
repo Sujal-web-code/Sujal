@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You 💖</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Varela+Round&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Varela Round', sans-serif;
+            background-color: #fff0f5;
+            background-image: radial-gradient(#fbcfe8 15%, transparent 16%), radial-gradient(#fbcfe8 15%, transparent 16%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            overflow: hidden;
+            color: #831843; /* Dark pink text */
+        }
+        
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            letter-spacing: 1px;
+        }
+
+        /* Soft Glass Card */
+        .cute-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 4px solid #fff;
+            box-shadow: 0 10px 30px rgba(244, 114, 182, 0.2);
+            border-radius: 40px;
+            transition: transform 0.3s ease;
+        }
+        
+        /* Bubbly Buttons */
+        .btn-yes {
+            background: linear-gradient(180deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            border: 3px solid white;
+            box-shadow: 0 6px 0 #fda4af, 0 10px 10px rgba(0,0,0,0.1);
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            transition: all 0.2s cubic-bezier(0.3, 2, 0.3, 1); /* Bouncy effect */
+            transform: translateY(0);
+        }
+        .btn-yes:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #fda4af, 0 0 0 rgba(0,0,0,0.1);
+        }
+
+        .btn-no {
+            background: #f3f4f6;
+            border: 3px solid white;
+            box-shadow: 0 6px 0 #d1d5db, 0 10px 10px rgba(0,0,0,0.05);
+            color: #9ca3af;
+            transition: all 0.1s ease;
+            position: absolute;
+        }
+
+        /* Speech Bubble */
+        .speech-bubble {
+            position: relative;
+            background: #fff;
+            border-radius: 20px;
+            padding: 15px 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 3px solid #fecdd3;
+        }
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: #fecdd3 transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* Animations */
+        @keyframes softBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .mascot-bounce {
+            animation: softBounce 2s ease-in-out infinite;
+        }
+
+        /* Background Clouds/Hearts */
+        .bg-floater {
+            position: absolute;
+            opacity: 0.6;
+            animation: floatLeft 25s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes floatLeft {
+            0% { transform: translateX(110vw); }
+            100% { transform: translateX(-20vw); }
+        }
+
+        /* Celebration Animations */
+        .celebration-heart {
+            position: absolute;
+            font-size: 2rem;
+            animation: floatUp 3s ease-in infinite;
+            opacity: 0;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        .pop-in {
+            animation: popIn 0.6s cubic-bezier(0.3, 2, 0.3, 1) forwards;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Falling Yes Buttons */
+        .falling-btn {
+            position: fixed;
+            z-index: 40;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col items-center justify-center relative">
+
+    <!-- Cute Background Elements -->
+    <div class="bg-floater text-4xl" style="top: 10%; animation-duration: 30s;">☁️</div>
+    <div class="bg-floater text-2xl" style="top: 25%; animation-delay: 5s;">💖</div>
+    <div class="bg-floater text-5xl" style="top: 60%; animation-duration: 35s; animation-delay: 2s;">☁️</div>
+    <div class="bg-floater text-3xl" style="top: 80%; animation-delay: 8s;">✨</div>
+
+    <!-- The Stage -->
+    <div class="relative z-10 w-full max-w-md p-4">
+        
+        <!-- Speech Bubble -->
+        <div id="bear-speech" class="speech-bubble mb-8 text-center text-lg font-bold text-pink-400 transform transition-all duration-300 scale-0 opacity-0">
+            I have a teeny question... 👉👈
+        </div>
+
+        <!-- Main Card -->
+        <div id="main-card" class="cute-card p-8 text-center relative overflow-visible transition-opacity duration-500">
+            
+            <!-- Mascot -->
+            <div class="absolute -top-16 left-1/2 transform -translate-x-1/2 w-32 h-32 flex items-center justify-center z-20">
+                <div id="mascot" class="text-8xl filter drop-shadow-md cursor-pointer mascot-bounce transition-all duration-300">
+                    🧸
+                </div>
+            </div>
+
+            <div class="mt-12 space-y-4">
+                <h1 id="main-title" class="text-4xl text-pink-500 mb-2 drop-shadow-sm">Be My Valentine?</h1>
+                
+                <p id="sub-title" class="text-pink-300 text-sm font-bold tracking-wide">
+                    (PRETTY PLEASE?)
+                </p>
+
+                <!-- Button Area -->
+                <div class="h-48 relative flex items-center justify-center" id="button-area">
+                    
+                    <!-- YES Button -->
+                    <button onclick="acceptProposal()" 
+                        class="btn-yes font-bold py-4 px-10 rounded-full text-2xl z-10 mr-4">
+                        YES! 💖
+                    </button>
+
+                    <!-- NO Button -->
+                    <button id="no-btn" 
+                        class="btn-no font-bold py-3 px-8 rounded-full text-lg z-20 cursor-pointer">
+                        No ☁️
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Celebration Overlay -->
+    <div id="celebration" class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-500 bg-pink-100/40 backdrop-blur-sm">
+        
+        <!-- Success Card -->
+        <div id="celebration-card" class="bg-white p-8 rounded-[3rem] shadow-2xl text-center max-w-sm w-full mx-4 transform scale-50 transition-transform duration-500 relative overflow-hidden border-4 border-pink-100">
+            
+            <div class="relative z-10">
+                <div class="text-7xl mb-4 animate-bounce">
+                    🥰
+                </div>
+                
+                <h1 class="text-4xl font-black text-pink-500 mb-2">
+                    YAYYY!
+                </h1>
+                
+                <p class="text-pink-400 font-bold text-lg mb-8">
+                    You just made my day 1000x cuter! 🌸
+                </p>
+
+                <!-- Instagram Button -->
+                <a id="wa-link" href="#" target="_blank"
+                   class="inline-block bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-4 px-8 rounded-full shadow-lg transition-transform hover:scale-105 pointer-events-auto border-4 border-white">
+                   Message Me 📸
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mascot = document.getElementById('mascot');
+        const speechBubble = document.getElementById('bear-speech');
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.querySelector('.btn-yes');
+        const celebration = document.getElementById('celebration');
+        const celebrationCard = document.getElementById('celebration-card');
+        
+        let attempts = 0;
+        let isRaining = false;
+
+        // Cute Mascot States
+        const emotions = {
+            idle: '🧸',
+            shocked: '🐨', 
+            scared: '🙈',
+            crying: '🥺',
+            love: '😻',
+            cool: '😎'
+        };
+
+        const phrases = [
+            "Wait... really? 🥺",
+            "Are you sure? 👉👈",
+            "But look how cute I am!",
+            "Don't break my heart...",
+            "I'll give you cookies! 🍪",
+            "Pretty please with sprinkles?",
+            "Okay, now I'm sad...",
+            "RESISTANCE IS FUTILE! 💕"
+        ];
+
+        // 1. Entrance
+        window.onload = () => {
+            setTimeout(() => {
+                speechBubble.classList.remove('scale-0', 'opacity-0');
+            }, 500);
+            
+            // *** IMPORTANT: REPLACE 'YOUR_USERNAME_HERE' BELOW ***
+            document.getElementById('wa-link').href = "https://www.instagram.com/sujalthakur628/";
+        };
+
+        // 2. The "Magnetic" Evasion Logic
+        document.addEventListener('mousemove', (e) => {
+            if (attempts > 10 || isRaining) return;
+
+            const rect = noBtn.getBoundingClientRect();
+            const btnX = rect.left + rect.width / 2;
+            const btnY = rect.top + rect.height / 2;
+            
+            const dist = Math.sqrt(Math.pow(e.clientX - btnX, 2) + Math.pow(e.clientY - btnY, 2));
+            
+            if (dist < 120) {
+                moveButtonAway(e.clientX, e.clientY);
+                updateMascot(dist);
+            } else {
+                mascot.innerText = emotions.idle;
+            }
+        });
+
+        // 3. Move Button Function
+        function moveButtonAway(mouseX, mouseY) {
+            attempts++;
+            
+            const rect = noBtn.getBoundingClientRect();
+            const currentX = rect.left;
+            const currentY = rect.top;
+            
+            // Move more chaotically
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 150 + (attempts * 10);
+            
+            let newX = currentX + (Math.cos(angle) * speed);
+            let newY = currentY + (Math.sin(angle) * speed);
+            
+            // Screen boundaries with padding
+            if (newX < 50) newX = window.innerWidth - 100;
+            if (newX > window.innerWidth - 100) newX = 50;
+            if (newY < 50) newY = window.innerHeight - 100;
+            if (newY > window.innerHeight - 100) newY = 50;
+
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = `${newX}px`;
+            noBtn.style.top = `${newY}px`;
+            noBtn.style.transform = `rotate(${Math.random()*20 - 10}deg)`; // Tilt it for cuteness
+
+            if (attempts < phrases.length) {
+                speechBubble.innerText = phrases[attempts];
+            }
+
+            if (attempts === 8 && !isRaining) {
+                triggerYesRain();
+            }
+        }
+
+        function updateMascot(dist) {
+            if (dist < 50) {
+                mascot.innerText = emotions.crying;
+            } else if (dist < 100) {
+                mascot.innerText = emotions.shocked;
+            }
+        }
+
+        // 4. The "Yes Rain" Effect
+        function triggerYesRain() {
+            isRaining = true;
+            speechBubble.innerText = "OKAY THAT'S IT! 💕";
+            mascot.innerText = emotions.scared;
+
+            // Change No button text but KEEP IT VISIBLE
+            noBtn.innerText = "Okay fine... 💖";
+            noBtn.style.backgroundColor = "#fff"; 
+            noBtn.style.color = "#ec4899";
+            noBtn.style.transform = "scale(1)";
+            noBtn.style.boxShadow = "none";
+            noBtn.style.border = "2px dashed #ec4899";
+            
+            // If they click the now stationary "No", it counts as Yes
+            noBtn.onclick = acceptProposal;
+
+            // Create falling Yes buttons
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const btn = document.createElement('button');
+                    btn.innerText = "YES! 💖";
+                    btn.className = 'btn-yes falling-btn';
+                    btn.style.left = Math.random() * window.innerWidth + 'px';
+                    btn.style.top = '-50px';
+                    btn.style.padding = '10px 20px';
+                    btn.style.fontSize = '1.2rem';
+                    btn.style.borderRadius = '20px';
+                    
+                    btn.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    btn.onclick = acceptProposal;
+                    document.body.appendChild(btn);
+                }, i * 150);
+            }
+        }
+
+        // 5. Interaction Handlers
+        noBtn.addEventListener('touchstart', (e) => {
+            if (!isRaining) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                moveButtonAway(touch.clientX, touch.clientY);
+            }
+        });
+
+        noBtn.addEventListener('click', (e) => {
+            if (!isRaining) {
+                 moveButtonAway(e.clientX, e.clientY);
+            } else {
+                acceptProposal();
+            }
+        });
+
+        // 6. Acceptance Logic
+        function acceptProposal() {
+            startConfetti();
+            
+            mascot.innerText = emotions.love;
+            speechBubble.innerText = "YAYYY! 🥰";
+            
+            // Fade out rain buttons
+            const fallingBtns = document.querySelectorAll('.falling-btn');
+            fallingBtns.forEach(btn => {
+                btn.style.transition = "opacity 0.5s";
+                btn.style.opacity = '0';
+            });
+
+            // Show Celebration
+            celebration.classList.remove('opacity-0', 'pointer-events-none');
+            celebrationCard.classList.remove('scale-50');
+            celebrationCard.classList.add('pop-in');
+        }
+
+        // --- Simple Confetti ---
+        function startConfetti() {
+            const canvas = document.createElement('canvas');
+            canvas.style.position = 'fixed';
+            canvas.style.inset = '0';
+            canvas.style.zIndex = '100';
+            canvas.style.pointerEvents = 'none';
+            document.body.appendChild(canvas);
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const particles = [];
+            const colors = ['#f472b6', '#fbcfe8', '#fdf2f8', '#fff'];
+            
+            for(let i=0; i<150; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    vx: Math.random() * 2 - 1,
+                    vy: Math.random() * 3 + 2,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: Math.random() * 8 + 4
+                });
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if(p.y > canvas.height) p.y = -20;
+                    
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
